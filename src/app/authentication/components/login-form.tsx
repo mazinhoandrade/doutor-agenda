@@ -45,6 +45,13 @@ const LoginForm = () => {
     },
   });
 
+  const handleGoogleSignIn = async () => {
+    await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/dashboard",
+    });
+  };
+
   async function onSubmit(values: z.infer<typeof loginSchema>) {
     await authClient.signIn.email(
       {
@@ -97,7 +104,7 @@ const LoginForm = () => {
               )}
             />
           </CardContent>
-          <CardFooter>
+          <CardFooter className="flex flex-col gap-2">
             <Button
               disabled={form.formState.isSubmitting}
               className="w-full"
@@ -108,6 +115,15 @@ const LoginForm = () => {
               ) : (
                 "Entrar"
               )}
+            </Button>
+
+            <Button
+              onClick={handleGoogleSignIn}
+              variant="outline"
+              type="button"
+              className="w-full"
+            >
+              Entrar com Google
             </Button>
           </CardFooter>
         </form>

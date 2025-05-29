@@ -35,13 +35,13 @@ import { authClient } from "@/lib/auth-client";
 // Menu items.
 const items = [
   {
-    title: "Agendamentos",
+    title: "Dashboard",
     url: "/dashboard",
     icon: LayoutDashboard,
   },
   {
-    title: "Clínicas",
-    url: "/clinics",
+    title: "Agendamentos",
+    url: "/appointments",
     icon: CalendarDays,
   },
   {
@@ -103,7 +103,7 @@ export function AppSidebar() {
                   <Avatar>
                     <AvatarImage
                       src={session.data?.user.image ?? ""}
-                      alt={session.data?.user.clinic.name}
+                      alt={session.data?.user.clinic?.name ?? ""}
                       width={32}
                       height={32}
                     />
@@ -113,7 +113,7 @@ export function AppSidebar() {
                   </Avatar>
                   <div>
                     <p className="text-sm capitalize">
-                      {session.data?.user.clinic.name}
+                      {session.data?.user.clinic?.name ?? ""}
                     </p>
                     <p className="text-muted-foreground text-sm">
                       {session.data?.user.email}

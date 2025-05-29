@@ -2,8 +2,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 import { AppSidebar } from "./_components/app-sidebar";
 
-const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
-  //const session = await auth();
+const ProtectedLayout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <SidebarProvider>
       <AppSidebar />

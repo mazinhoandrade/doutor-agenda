@@ -32,7 +32,7 @@ const ClinicForm = () => {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof clinicSchema>) {
+  const onSubmit = async (values: z.infer<typeof clinicSchema>) => {
     try {
       await createClinic(values.name);
     } catch (error) {
@@ -42,7 +42,7 @@ const ClinicForm = () => {
       console.error(error);
       toast.error("Erro ao criar clínica");
     }
-  }
+  };
 
   return (
     <>

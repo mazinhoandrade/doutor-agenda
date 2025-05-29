@@ -48,8 +48,7 @@ const SignUpForm = () => {
       password: "",
     },
   });
-
-  async function onSubmit(values: z.infer<typeof registerSchema>) {
+  const onSubmit = async (values: z.infer<typeof registerSchema>) => {
     await authClient.signUp.email(
       {
         email: values.email,
@@ -67,7 +66,7 @@ const SignUpForm = () => {
         },
       },
     );
-  }
+  };
   return (
     <Card>
       <Form {...form}>

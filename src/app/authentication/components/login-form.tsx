@@ -52,7 +52,7 @@ const LoginForm = () => {
     });
   };
 
-  async function onSubmit(values: z.infer<typeof loginSchema>) {
+  const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     await authClient.signIn.email(
       {
         email: values.email,
@@ -67,7 +67,7 @@ const LoginForm = () => {
         },
       },
     );
-  }
+  };
   return (
     <Card>
       <Form {...form}>

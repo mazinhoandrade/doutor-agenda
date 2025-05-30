@@ -2,6 +2,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -37,10 +38,10 @@ const formSchema = z
     name: z.string().trim().min(1, {
       message: "Nome é obrigatório",
     }),
-    specialty: z.string().trim().min(1, {
+    speciality: z.string().trim().min(1, {
       message: "Especialidade é obrigatória",
     }),
-    appointmentPrice: z.number().min(1, {
+    appointmentPriceInCents: z.number().min(1, {
       message: "Preço da consulta é obrigatório",
     }),
     availableFromWeekday: z.string(),
@@ -62,13 +63,21 @@ const formSchema = z
     },
   );
 
-const UpsertDoctorForm = () => {
+import { useAction } from "next-safe-action/hooks";
+
+import { upsertDoctor } from "@/actions/upsert-doctor";
+
+interface Props {
+  onSuccess?: () => void;
+}
+
+const UpsertDoctorForm = ({ onSuccess }: Props) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      specialty: "",
-      appointmentPrice: 0,
+      speciality: "",
+      appointmentPriceInCents: 0,
       availableFromWeekday: "1",
       availableToWeekday: "5",
       availableFromTime: "",
@@ -76,8 +85,23 @@ const UpsertDoctorForm = () => {
     },
   });
 
+  const upsertDoctorAction = useAction(upsertDoctor, {
+    onSuccess: () => {
+      toast.success("Médico cadastrado com sucesso");
+      onSuccess?.();
+    },
+    onError: () => {
+      toast.error("Erro ao cadastrar médico");
+    },
+  });
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    upsertDoctorAction.execute({
+      ...values,
+      availableFromWeekDay: parseInt(values.availableFromWeekday.toString()),
+      availableToWeekDay: parseInt(values.availableToWeekday.toString()),
+      appointmentPriceInCents: values.appointmentPriceInCents * 100,
+    });
   };
 
   return (
@@ -103,7 +127,7 @@ const UpsertDoctorForm = () => {
 
           <FormField
             control={form.control}
-            name="specialty"
+            name="speciality"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Especialidade</FormLabel>
@@ -131,13 +155,13 @@ const UpsertDoctorForm = () => {
 
           <FormField
             control={form.control}
-            name="appointmentPrice"
+            name="appointmentPriceInCents"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Preço da consulta</FormLabel>
                 <NumericFormat
                   value={field.value}
-                  onChange={(value) => {
+                  onValueChange={(value) => {
                     field.onChange(value.floatValue);
                   }}
                   decimalScale={2}
@@ -352,8 +376,12 @@ const UpsertDoctorForm = () => {
             )}
           />
           <DialogFooter>
-            <Button className="w-full" type="submit">
-              Cadastrar
+            <Button
+              disabled={upsertDoctorAction.isPending}
+              className="w-full"
+              type="submit"
+            >
+              {upsertDoctorAction.isPending ? "Cadastrando..." : "Cadastrar"}
             </Button>
           </DialogFooter>
         </form>

@@ -1,3 +1,4 @@
+import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -10,9 +11,12 @@ import {
   PageHeaderDescription,
   PageHeaderTitle,
 } from "@/components/ui/page-container";
+import { db } from "@/db";
+import { doctorsTable } from "@/db/schema";
 import { auth } from "@/lib/auth";
 
 import AddDoctorButton from "./_components/add-doctor-button";
+import DoctorCard from "./_components/doctor-card";
 
 const DoctorsPage = async () => {
   const session = await auth.api.getSession({
@@ -26,6 +30,11 @@ const DoctorsPage = async () => {
   if (!session?.user?.clinic?.id) {
     redirect("/clinic-form");
   }
+
+  const doctors = await db.query.doctorsTable.findMany({
+    where: eq(doctorsTable.clinicId, session.user.clinic.id),
+  });
+
   return (
     <PageContainer>
       <PageHeader>
@@ -40,7 +49,17 @@ const DoctorsPage = async () => {
         </PageActions>
       </PageHeader>
       <PageContent>
-        <div className="flex flex-col gap-4"></div>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {doctors.length > 0 &&
+            doctors.map((doctor) => (
+              <DoctorCard key={doctor.id} doctor={doctor} />
+            ))}
+        </div>
+        {doctors.length === 0 && (
+          <div className="flex flex-col items-center justify-center">
+            <p className="text-muted-foreground">Nenhum médico cadastrado</p>
+          </div>
+        )}
       </PageContent>
     </PageContainer>
   );

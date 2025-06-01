@@ -1,8 +1,27 @@
 "use client";
 
-import { Calendar1Icon, ClockIcon, DollarSignIcon } from "lucide-react";
+import {
+  Calendar1Icon,
+  ClockIcon,
+  DollarSignIcon,
+  TrashIcon,
+} from "lucide-react";
+import { useAction } from "next-safe-action/hooks";
 import { useState } from "react";
+import { toast } from "sonner";
 
+import { deleteDoctor } from "@/actions/delete-doctor";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -32,6 +51,22 @@ const DoctorCard = ({ doctor }: DoctorCardProps) => {
     .join("");
 
   const availability = getAvailability(doctor);
+
+  const deleteDoctorAction = useAction(deleteDoctor, {
+    onSuccess: () => {
+      toast.success("Médico excluído com sucesso");
+    },
+    onError: () => {
+      toast.error("Erro ao excluir médico");
+    },
+  });
+
+  const handleDeleteClick = () => {
+    if (!doctor) return;
+    deleteDoctorAction.execute({
+      id: doctor.id,
+    });
+  };
   return (
     <Card>
       <CardHeader>
@@ -63,7 +98,7 @@ const DoctorCard = ({ doctor }: DoctorCardProps) => {
         </Badge>
       </CardContent>
       <Separator />
-      <CardFooter>
+      <CardFooter className="flex flex-col gap-2">
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
             <Button className="w-full">Ver Detalhes</Button>
@@ -77,6 +112,33 @@ const DoctorCard = ({ doctor }: DoctorCardProps) => {
             onSuccess={() => setIsOpen(false)}
           />
         </Dialog>
+        {doctor.id && (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button className="w-full" variant="secondary">
+                <TrashIcon className="mr-1" />
+                Excluir médico
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  Tem certeza que deseja excluir esse médico?
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  Essa ação não pode ser revertida. Isso irá excluir o médico e
+                  todas as consultas agendadas.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDeleteClick}>
+                  Continuar
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
       </CardFooter>
     </Card>
   );

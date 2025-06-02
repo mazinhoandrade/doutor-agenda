@@ -1,8 +1,9 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
 
-import { Button } from "@/components/ui/button";
 import { patientsTable } from "@/db/schema";
+
+import TableActionPatient from "./table-action";
 
 type Patient = typeof patientsTable.$inferSelect;
 
@@ -48,13 +49,9 @@ export const patientsTableColumns: ColumnDef<Patient>[] = [
     id: "actions",
     header: "Ações",
     accessorKey: "actions",
-    cell: () => {
-      return (
-        <div className="flex items-center gap-2">
-          <Button variant="outline">Editar</Button>
-          <Button variant="destructive">Excluir</Button>
-        </div>
-      );
+    cell: (params) => {
+      const patient = params.row.original;
+      return <TableActionPatient patient={patient} />;
     },
   },
 ];

@@ -53,7 +53,7 @@ const formSchema = z.object({
 interface UpsertPatientFormProps {
   isOpen: boolean;
   patient?: typeof patientsTable.$inferSelect;
-  onSuccess?: () => void;
+  onSuccess: () => void;
 }
 
 const UpsertPatientForm = ({
@@ -81,7 +81,7 @@ const UpsertPatientForm = ({
   const upsertPatientAction = useAction(upsertPatient, {
     onSuccess: () => {
       toast.success("Paciente salvo com sucesso.");
-      onSuccess?.();
+      onSuccess();
     },
     onError: () => {
       toast.error("Erro ao salvar paciente.");

@@ -104,6 +104,7 @@ const DoctorCard = ({ doctor }: DoctorCardProps) => {
             <Button className="w-full">Ver Detalhes</Button>
           </DialogTrigger>
           <UpsertDoctorForm
+            isOpen={isOpen}
             doctor={{
               ...doctor,
               availableFromTime: availability.from.format("HH:mm:ss"),

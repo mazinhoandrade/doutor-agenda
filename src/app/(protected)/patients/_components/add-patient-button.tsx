@@ -1,25 +1,27 @@
 "use client";
-import { Plus } from "lucide-react";
+
+import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 
-import UpsertDoctorForm from "./upsert-doctor-form";
+import UpsertPatientForm from "./upsert-patient-form";
 
-const AddDoctorButton = () => {
+export function AddPatientButton() {
   const [isOpen, setIsOpen] = useState(false);
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button>
-          <Plus />
-          Adicionar médico
+          <PlusIcon className="mr-2 size-4" />
+          Adicionar Paciente
         </Button>
       </DialogTrigger>
-      <UpsertDoctorForm onSuccess={() => setIsOpen(false)} isOpen={isOpen} />
+      {isOpen && (
+        <UpsertPatientForm onSuccess={() => setIsOpen(false)} isOpen={isOpen} />
+      )}
     </Dialog>
   );
-};
-
-export default AddDoctorButton;
+}

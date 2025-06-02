@@ -64,16 +64,18 @@ const formSchema = z
   );
 
 import { useAction } from "next-safe-action/hooks";
+import { useEffect } from "react";
 
 import { upsertDoctor } from "@/actions/upsert-doctor";
 import { doctorsTable } from "@/db/schema";
 
 interface Props {
+  isOpen: boolean;
   doctor?: typeof doctorsTable.$inferSelect;
   onSuccess?: () => void;
 }
 
-const UpsertDoctorForm = ({ onSuccess, doctor }: Props) => {
+const UpsertDoctorForm = ({ onSuccess, doctor, isOpen }: Props) => {
   const form = useForm<z.infer<typeof formSchema>>({
     shouldUnregister: true,
     resolver: zodResolver(formSchema),
@@ -89,6 +91,12 @@ const UpsertDoctorForm = ({ onSuccess, doctor }: Props) => {
       availableToTime: doctor?.availableToTime ?? "",
     },
   });
+
+  useEffect(() => {
+    if (isOpen) {
+      form.reset(doctor);
+    }
+  }, [isOpen, form, doctor]);
 
   const upsertDoctorAction = useAction(upsertDoctor, {
     onSuccess: () => {

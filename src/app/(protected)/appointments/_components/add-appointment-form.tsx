@@ -322,8 +322,14 @@ const AddAppointmentForm = ({
             )}
           />
 
-          <Button type="submit" className="w-full">
-            Criar agendamento
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={addAppointmentAction.isPending}
+          >
+            {addAppointmentAction.isPending
+              ? "Criando..."
+              : "Criar agendamento"}
           </Button>
         </form>
       </Form>

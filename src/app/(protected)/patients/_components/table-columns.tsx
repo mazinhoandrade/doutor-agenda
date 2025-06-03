@@ -41,7 +41,7 @@ export const patientsTableColumns: ColumnDef<Patient>[] = [
       if (sex === "female") {
         return "Feminino";
       } else {
-        return "Não informado";
+        return "Outro";
       }
     },
   },

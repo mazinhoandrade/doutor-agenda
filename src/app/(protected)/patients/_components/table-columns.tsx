@@ -47,7 +47,7 @@ export const patientsTableColumns: ColumnDef<Patient>[] = [
   },
   {
     id: "actions",
-    header: "Ações",
+    header: "",
     accessorKey: "actions",
     cell: (params) => {
       const patient = params.row.original;

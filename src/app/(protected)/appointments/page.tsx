@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-//import { DataTable } from "@/components/ui/data-table";
+import { DataTable } from "@/components/ui/data-table";
 import {
   PageActions,
   PageContainer,
@@ -17,7 +17,7 @@ import { appointmentsTable, doctorsTable, patientsTable } from "@/db/schema";
 import { auth } from "@/lib/auth";
 
 import AddAppointmentsButton from "./_components/add-appointments-button";
-//import { appointmentsTableColumns } from "./_components/table-columns";
+import { appointmentsTableColumns } from "./_components/table-columns";
 
 const AppointmentsPage = async () => {
   const session = await auth.api.getSession({
@@ -32,7 +32,7 @@ const AppointmentsPage = async () => {
     redirect("/clinic-form");
   }
 
-  const [patients, doctors] = await Promise.all([
+  const [patients, doctors, appointments] = await Promise.all([
     db.query.patientsTable.findMany({
       where: eq(patientsTable.clinicId, session.user.clinic.id),
     }),
@@ -62,16 +62,7 @@ const AppointmentsPage = async () => {
         </PageActions>
       </PageHeader>
       <PageContent>
-        kkk
-        {/*         <DataTable
-          columns={appointmentsTableColumns}
-          data={appointmentsTable}
-        />
-        {patients.length === 0 && (
-          <div className="flex flex-col items-center justify-center">
-            <p className="text-muted-foreground">Nenhum paciente cadastrado</p>
-          </div>
-        )} */}
+        <DataTable data={appointments} columns={appointmentsTableColumns} />
       </PageContent>
     </PageContainer>
   );

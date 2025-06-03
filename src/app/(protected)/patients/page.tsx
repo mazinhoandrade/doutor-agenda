@@ -51,11 +51,6 @@ export default async function PatientsPage() {
       </PageHeader>
       <PageContent>
         <DataTable columns={patientsTableColumns} data={patients} />
-        {patients.length === 0 && (
-          <div className="flex flex-col items-center justify-center">
-            <p className="text-muted-foreground">Nenhum paciente cadastrado</p>
-          </div>
-        )}
       </PageContent>
     </PageContainer>
   );

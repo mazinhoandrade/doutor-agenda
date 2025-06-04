@@ -52,4 +52,5 @@ export const addAppointment = actionClient
       clinicId: session?.user.clinic?.id,
     });
     revalidatePath("/appointments");
+    revalidatePath("/dashboard");
   });

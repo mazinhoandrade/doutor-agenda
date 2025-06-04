@@ -24,12 +24,14 @@ export const auth = betterAuth({
         where: eq(schema.usersToClinicsTable.userId, user.id),
         with: {
           clinic: true,
+          user: true,
         },
       });
       const clinic = clinics?.[0];
       return {
         user: {
           ...user,
+          plan: clinic?.user.plan,
           clinic: clinic
             ? {
                 id: clinic?.clinicId,
@@ -43,6 +45,23 @@ export const auth = betterAuth({
   ],
   user: {
     modelName: "usersTable",
+    additionalFields: {
+      stripeCustomerId: {
+        type: "string",
+        filterable: "stripeCustomerId",
+        required: false,
+      },
+      stripeSubscriptionId: {
+        type: "string",
+        filterable: "stripeSubscriptionId",
+        required: false,
+      },
+      plan: {
+        type: "string",
+        filterable: "plan",
+        required: false,
+      },
+    },
   },
   account: {
     modelName: "accountsTable",

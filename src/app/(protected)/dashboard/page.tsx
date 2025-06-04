@@ -14,8 +14,10 @@ import {
   PageHeaderDescription,
   PageHeaderTitle,
 } from "@/components/ui/page-container";
+import { getDashboard } from "@/data/get-dashboard";
 import { auth } from "@/lib/auth";
 
+import { appointmentsTableColumns } from "../appointments/_components/table-columns";
 import AppointmentsChart from "./_components/appointments-chart";
 import DatePicker from "./_components/date-picker";
 import StatsCards from "./_components/stats-cards";
@@ -46,7 +48,7 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
     );
   }
 
-  /* const {
+  const {
     totalRevenue,
     totalAppointments,
     totalPatients,
@@ -65,7 +67,7 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
         },
       },
     },
-  }); */
+  });
 
   return (
     <PageContainer>
@@ -82,14 +84,14 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
       </PageHeader>
       <PageContent>
         <StatsCards
-          totalRevenue={0}
-          totalAppointments={0}
-          totalPatients={0}
-          totalDoctors={0}
+          totalRevenue={totalRevenue.total ? Number(totalRevenue.total) : 0}
+          totalAppointments={totalAppointments.total}
+          totalPatients={totalPatients.total}
+          totalDoctors={totalDoctors.total}
         />
         <div className="grid grid-cols-[2fr_1fr] gap-4">
-          {/*           <AppointmentsChart /> */}
-          <TopDoctors doctors={[]} />
+          <AppointmentsChart dailyAppointmentsData={dailyAppointmentsData} />
+          <TopDoctors doctors={topDoctors} />
         </div>
         <div className="grid grid-cols-[2fr_1fr] gap-4">
           <Card>
@@ -102,13 +104,13 @@ const DashboardPage = async ({ searchParams }: DashboardPageProps) => {
               </div>
             </CardHeader>
             <CardContent>
-              {/* <DataTable
+              <DataTable
                 columns={appointmentsTableColumns}
                 data={todayAppointments}
-              /> */}
+              />
             </CardContent>
           </Card>
-          <TopSpecialties topSpecialties={[]} />
+          <TopSpecialties topSpecialties={topSpecialties} />
         </div>
       </PageContent>
     </PageContainer>

@@ -28,28 +28,21 @@ export const POST = async (request: Request) => {
       if (!event.data.object.id) {
         throw new Error("Subscription ID not found");
       }
-      const { subscription, subscription_details, customer } = event.data
-        .object as unknown as {
-        customer: string;
-        subscription: string;
-        subscription_details: {
-          metadata: {
-            userId: string;
-          };
-        };
-      };
-      if (!subscription) {
+
+      const subscription = event.data.object.parent?.subscription_details;
+
+      if (!subscription?.subscription) {
         throw new Error("Subscription not found");
       }
-      const userId = subscription_details.metadata.userId;
+      const userId = subscription?.metadata?.userId as string;
       if (!userId) {
         throw new Error("User ID not found");
       }
       await db
         .update(usersTable)
         .set({
-          stripeSubscriptionId: subscription,
-          stripeCustomerId: customer,
+          stripeSubscriptionId: subscription?.subscription as string,
+          stripeCustomerId: event.data.object.customer as string,
           plan: "essential",
         })
         .where(eq(usersTable.id, userId));
@@ -62,6 +55,7 @@ export const POST = async (request: Request) => {
       const subscription = await stripe.subscriptions.retrieve(
         event.data.object.id,
       );
+
       if (!subscription) {
         throw new Error("Subscription not found");
       }

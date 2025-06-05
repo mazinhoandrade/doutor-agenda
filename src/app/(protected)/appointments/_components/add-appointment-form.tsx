@@ -87,7 +87,8 @@ const AddAppointmentForm = ({
       date: undefined,
     },
   });
-
+  const now =
+    new Date().getHours().toString() + ":" + new Date().getMinutes().toString();
   const selectedDoctorId = form.watch("doctorId");
   const selectedPatientId = form.watch("patientId");
   const selectedDate = form.watch("date");
@@ -152,6 +153,7 @@ const AddAppointmentForm = ({
     );
     if (!selectedDoctor) return false;
     const dayOfWeek = date.getDay();
+
     return (
       dayOfWeek >= selectedDoctor?.availableFromWeekDay &&
       dayOfWeek <= selectedDoctor?.availableToWeekDay
@@ -276,9 +278,11 @@ const AddAppointmentForm = ({
                       mode="single"
                       selected={field.value}
                       onSelect={field.onChange}
-                      disabled={(date) =>
-                        date < new Date() || !isDateAvailable(date)
-                      }
+                      disabled={(date) => {
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        return date < today || !isDateAvailable(date);
+                      }}
                       initialFocus
                       locale={ptBR}
                     />
@@ -310,9 +314,12 @@ const AddAppointmentForm = ({
                       <SelectItem
                         key={time.value}
                         value={time.value}
-                        disabled={!time.available}
+                        disabled={!time.available || time.label < now}
                       >
-                        {time.label} {!time.available && "(Indisponível)"}
+                        {time.label}{" "}
+                        {!time.available || time.label < now
+                          ? "(Indisponível)"
+                          : ""}
                       </SelectItem>
                     ))}
                   </SelectContent>

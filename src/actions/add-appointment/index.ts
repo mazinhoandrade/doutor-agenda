@@ -18,15 +18,12 @@ export const addAppointment = actionClient
     const session = await auth.api.getSession({
       headers: await headers(),
     });
-
     if (!session?.user) {
       throw new Error("Unauthorized");
     }
-
     if (!session?.user.clinic?.id) {
       throw new Error("Clinic not found");
     }
-
     const availableTimes = await getAvailableTimes({
       doctorId: parsedInput.doctorId,
       date: dayjs(parsedInput.date).format("YYYY-MM-DD"),
@@ -40,17 +37,21 @@ export const addAppointment = actionClient
     if (!isTimeAvailable) {
       throw new Error("Time not available");
     }
-
     const appointmentDateTime = dayjs(parsedInput.date)
       .set("hour", parseInt(parsedInput.time.split(":")[0]))
       .set("minute", parseInt(parsedInput.time.split(":")[1]))
       .toDate();
 
+    const now = new Date();
+    if (appointmentDateTime < now) {
+      throw new Error("a date and time cannot be in the past");
+    }
     await db.insert(appointmentsTable).values({
       ...parsedInput,
-      date: appointmentDateTime,
       clinicId: session?.user.clinic?.id,
+      date: appointmentDateTime,
     });
+
     revalidatePath("/appointments");
     revalidatePath("/dashboard");
   });

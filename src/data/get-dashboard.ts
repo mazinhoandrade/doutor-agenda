@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { and, count, desc, eq, gte, lte, sql, sum } from "drizzle-orm";
+import { and, count, desc, eq, gte, lt, lte, sql, sum } from "drizzle-orm";
 
 import { db } from "@/db";
 import { appointmentsTable, doctorsTable, patientsTable } from "@/db/schema";
@@ -17,8 +17,11 @@ interface Params {
 }
 
 export const getDashboard = async ({ from, to, session }: Params) => {
-  const chartStartDate = dayjs().subtract(10, "days").startOf("day").toDate();
-  const chartEndDate = dayjs().add(10, "days").endOf("day").toDate();
+  const chartStartDate = dayjs().subtract(10, "days").startOf("day").toDate(); // 10 days before
+  const chartEndDate = dayjs().add(10, "days").endOf("day").toDate(); // 10 days after
+  const today = dayjs().startOf("day").toDate();
+  const tomorrow = dayjs().add(1, "day").startOf("day").toDate();
+
   const [
     [totalRevenue],
     [totalAppointments],
@@ -105,13 +108,14 @@ export const getDashboard = async ({ from, to, session }: Params) => {
     db.query.appointmentsTable.findMany({
       where: and(
         eq(appointmentsTable.clinicId, session.user.clinic.id),
-        gte(appointmentsTable.date, new Date()),
-        lte(appointmentsTable.date, new Date()),
+        gte(appointmentsTable.date, today),
+        lt(appointmentsTable.date, tomorrow),
       ),
       with: {
         patient: true,
         doctor: true,
       },
+      orderBy: (appointments, { asc }) => [asc(appointments.date)],
     }),
     db
       .select({

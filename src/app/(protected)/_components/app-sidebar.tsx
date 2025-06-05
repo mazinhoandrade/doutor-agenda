@@ -2,6 +2,7 @@
 
 import { AvatarFallback } from "@radix-ui/react-avatar";
 import {
+  Activity,
   CalendarDays,
   Gem,
   LayoutDashboard,
@@ -77,7 +78,13 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarHeader className="border-b p-4">
         <div className="flex items-center justify-between">
-          <Image src="/logo.svg" alt="Doutor Agenda" width={136} height={28} />
+          <div className="flex items-center gap-2">
+            <span className="text-primary bg-primary/10 rounded-full p-2">
+              <Activity className="h-6 w-6" />
+            </span>{" "}
+            <p className="text-2xl font-bold">dr.agenda</p>
+          </div>
+          {/* <Image src="/logo.svg" alt="Doutor Agenda" width={136} height={28} /> */}
           <ModeToggle />
         </div>
       </SidebarHeader>

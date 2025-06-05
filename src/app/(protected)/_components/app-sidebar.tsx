@@ -10,7 +10,7 @@ import {
   Stethoscope,
   UsersRound,
 } from "lucide-react";
-import Image from "next/image";
+//import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 

@@ -87,8 +87,7 @@ const AddAppointmentForm = ({
       date: undefined,
     },
   });
-  const now =
-    new Date().getHours().toString() + ":" + new Date().getMinutes().toString();
+
   const selectedDoctorId = form.watch("doctorId");
   const selectedPatientId = form.watch("patientId");
   const selectedDate = form.watch("date");
@@ -158,6 +157,18 @@ const AddAppointmentForm = ({
       dayOfWeek >= selectedDoctor?.availableFromWeekDay &&
       dayOfWeek <= selectedDoctor?.availableToWeekDay
     );
+  };
+
+  const isDateAvailableAndTime = (time: string) => {
+    const selectedDate = form.watch("date");
+    if (!selectedDate) return false;
+
+    const currentDate = new Date();
+    const [hours, minutes] = time.split(":");
+    const selectedDateTime = new Date(selectedDate);
+    selectedDateTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+
+    return selectedDateTime > currentDate;
   };
 
   const isDateTimeEnabled = selectedPatientId && selectedDoctorId;
@@ -314,10 +325,12 @@ const AddAppointmentForm = ({
                       <SelectItem
                         key={time.value}
                         value={time.value}
-                        disabled={!time.available || time.label < now}
+                        disabled={
+                          !time.available || !isDateAvailableAndTime(time.value)
+                        }
                       >
                         {time.label}{" "}
-                        {!time.available || time.label < now
+                        {!time.available || !isDateAvailableAndTime(time.value)
                           ? "(Indisponível)"
                           : ""}
                       </SelectItem>

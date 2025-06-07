@@ -7,7 +7,7 @@ import { db } from "@/db";
 import * as schema from "@/db/schema";
 import { usersTable, usersToClinicsTable } from "@/db/schema";
 
-const FIVE_MINUTES = 5 * 60 * 1000;
+const FIVE_MINUTES = 5 * 60 * 1000; // 5 minutes
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {

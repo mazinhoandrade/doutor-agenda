@@ -77,11 +77,11 @@ const ClinicForm = () => {
           />
           <DialogFooter>
             <Button
-              disabled={form.formState.isSubmitting}
+              disabled={addClinicAction.isPending}
               className="w-full"
               type="submit"
             >
-              {form.formState.isSubmitting ? (
+              {addClinicAction.isPending ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
                 "Criar clínica"

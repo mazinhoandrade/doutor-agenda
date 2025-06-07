@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const middleware = (request: NextRequest) => {
   const sessionCookie = getSessionCookie(request);
+  console.log("middleware");
 
   if (!sessionCookie) {
     return NextResponse.redirect(new URL("/authentication", request.url));
@@ -19,6 +20,6 @@ export const config = {
     "/doctors/:path*",
     "/patients/:path*",
     "/subscription/:path*",
-    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+    //"/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
   ],
 };
